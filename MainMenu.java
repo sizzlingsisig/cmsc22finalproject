@@ -56,23 +56,21 @@ public class MainMenu extends JPanel {
         panel.setLayout(new GridBagLayout()); // Use GridBagLayout for uniform JButton sizes
         panel.setOpaque(false); // Make the panel transparent
 
-        // Create clickable JButtons
-        JButton monkeyButton = createClickableButton("Monkey");
-        JButton helloButton = createClickableButton("Hello");
-
-        // Create GridBagConstraints for JButtons
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Fill the width
-        gbc.weightx = 1.0; // Allow JButtons to expand to fill the space
-        gbc.weighty = 1.0; // Allow JButtons to expand to fill the height
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Allow buttons to fill the width
+        gbc.weightx = 0; // Allow JButtons to expand to fill the width
+        gbc.weighty = 0; // Do not allow JButtons to expand to fill the height
 
-        // Add JButtons to the panel
-        gbc.gridx = 0; // First column
-        gbc.gridy = 0; // First row
-        panel.add(monkeyButton, gbc);
+        // Add three buttons to the panel, stacking them vertically
+        for (int i = 0; i < 3; i++) {
+            gbc.gridx = 0; // Set column index to 0 for all buttons
+            gbc.gridy = i; // Set row index to i (0, 1, 2)
 
-        gbc.gridy = 1; // Second row
-        panel.add(helloButton, gbc);
+            // Create a new JButton and add it to the panel
+            JButton button = createClickableButton("Button " + (i + 1)); // Adjust button label
+            button.setPreferredSize(new Dimension(150, 50)); // Set a larger preferred size for the buttons
+            panel.add(button, gbc);
+        }
 
         return panel;
     }
