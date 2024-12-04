@@ -1,53 +1,101 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
-
-// Interface for components that can be added to the MainMenu
-interface MenuComponent {
-    JPanel createPanel();
-}
 
 // Class for the main menu
 public class MainMenu extends JPanel {
-
     private Image backgroundImage;
-
+    private JPanel[] panels; // Array to hold the panels
+    
     public MainMenu() {
         // Load the background image
-        backgroundImage = new ImageIcon("C:/Users/cj/Downloads/git/cmsc22finalproject/mainMenuScreen.png").getImage();
+        backgroundImage = new ImageIcon("C:/Users/cj/Downloads/git/cmsc22finalproject/297.png").getImage();
+    
         // Check if the image is loaded correctly
         if (backgroundImage.getWidth(null) == -1 || backgroundImage.getHeight(null) == -1) {
             System.err.println("Image not found or failed to load!");
         }
-
+    
         // Set layout for the main panel
-        setLayout(new GridBagLayout());
+        setLayout(new GridLayout(3, 3)); // 3x3 grid layout
+    
+        // Initialize the panel array
+        panels = new JPanel[9];
+    
+        // Create the first six panels in a loop
+        for (int i = 0; i < 6; i++) {
+            panels[i] = new JPanel();
+            panels[i].setOpaque(false); // Set the panels to be transparent
+            panels[i].setLayout(new BorderLayout()); // Use BorderLayout for positioning
+            add(panels[i]); // Add the panel to the grid
+        }
 
-        // Create and add panels
-        addComponent(new TransparentPanel(), 0, 0, 0.5, 0.5);
-        addComponent(new TransparentPanel(), 1, 0, 0.5, 0.5);
-        addComponent(new BottomLeftPanel(), 0, 1, 0.5, 0.5);
-        addComponent(new TransparentPanel(), 1, 1, 0.5, 0.5);
+        // Manually create and add buttons to the bottom three panels
+        panels[6] = createButtonPanel("LETS GO GAMBLING");
+        panels[7] = createButtonPanel("SHOW PROFILE");
+        panels[8] = createButtonPanel("EXIT");
     }
-
-    private void addComponent(MenuComponent component, int gridx, int gridy, double weightx, double weighty) {
-        JPanel panel = component.createPanel();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = gridx;
-        gbc.gridy = gridy;
-        gbc.weightx = weightx;
-        gbc.weighty = weighty;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(panel, gbc);
+    
+    private JPanel createButtonPanel(String buttonText) {
+        JPanel panel = new JPanel();
+        panel.setOpaque(false); // Set the panel to be transparent
+        panel.setLayout(new BorderLayout()); // Use BorderLayout for positioning
+        
+        JButton button = new JButton(buttonText);
+        button.addActionListener(new ButtonClickListener(buttonText)); // Pass button text to listener
+        panel.add(button, BorderLayout.CENTER); // Add button to the center
+        add(panel); // Add the panel to the grid
+        
+        return panel;
     }
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the background image
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
+    
+    private class ButtonClickListener implements ActionListener {
+        private String buttonText;
 
-    public static void main(String[] args) {
+        public ButtonClickListener(String buttonText) {
+            this.buttonText = buttonText;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switch (buttonText) {
+                case "LETS GO GAMBLING":
+                    // Dispose of the current frame
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
+                    if (frame != null) {
+                        frame.dispose(); // Dispose the main menu frame
+                    }
+                    // Show the GameScreen
+                    GameScreen.createAndShowGameScreen();
+                    break;
+                case "SHOW PROFILE":
+                    // Action for the profile button
+                    JOptionPane.showMessageDialog(MainMenu.this, "Showing profile information...");
+                    break;
+                case "EXIT":
+                    // Action for the exit button
+                    int confirm = JOptionPane.showConfirmDialog(MainMenu.this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        System.exit(0); // Exit the application
+                    }
+                    break;
+                default:
+                    System.out.println("Unknown button clicked: " + buttonText);
+                    break;
+            }
+        }
+    }
+
+    // Method to initialize and return a JFrame containing the MainMenu
+    public static JFrame createMainMenuFrame() {
         JFrame frame = new JFrame("Java UI with Background Image");
         MainMenu panel = new MainMenu();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -56,112 +104,6 @@ public class MainMenu extends JPanel {
         frame.setSize(screenSize.width, screenSize.height);
         frame.setResizable(false);
         frame.setVisible(true);
-    }
-}
-
-// Class for transparent panels
-class TransparentPanel implements MenuComponent {
-    @Override
-    public JPanel createPanel() {
-        JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        return panel;
-    }
-}
-
-// Class for the bottom left panel with labels
-class BottomLeftPanel implements MenuComponent {
-    @Override
-    public JPanel createPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.setOpaque(false);
-
-        // Add labels to the panel
-        addLabelToPanel(panel, "Let's Go Gambling", 0);
-        addLabelToPanel(panel, "Save Profile", 1);
-        addLabelToPanel(panel, "Load Profile", 2);
-        addLabelToPanel(panel, "Exit", 3);
-
-        return panel;
-    }
-
-    private void addLabelToPanel(JPanel panel, String text, int gridy) {
-        JLabel label = new JLabel(text);
-        label.setFont(new Font("Garamond", Font.BOLD, 30)); 
-        label.setForeground(new Color(255, 238, 220));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Change cursor to hand
-
-        // Add mouse listener for click event
-        label.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelClicked(label.getText()); 
-            }
-        });
-
-        addComponentToPanel(panel, label, 0, gridy, 1.0, 0.5);
-    }
-
-    private void addComponentToPanel(JPanel panel, Component component, int gridx, int gridy, double weightx, double weighty) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = gridx;
-        gbc.gridy = gridy;
-        gbc.weightx = weightx;
-        gbc.weighty = weighty;
-        gbc.fill = GridBagConstraints.NONE;
-        panel.add(component, gbc);
-    }
-
-    // Method to handle label click events
-    private void labelClicked(String labelText) {
-        // Perform action based on which label was clicked
-        switch (labelText) {
-            case "Let's Go Gambling":
-                // Get the parent frame using the MouseEvent
-          
-
-                // Create and show the Game screen
-                JFrame gameFrame = new JFrame("Game Screen");
-                Game gamePanel = new Game();
-                gameFrame.setContentPane(gamePanel);
-                gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                gameFrame.setSize(screenSize.width, screenSize.height); // Set size for the game window
-                gameFrame.setVisible(true);
-                break;
-            case "Save Profile":
-                JOptionPane.showMessageDialog(null, "Profile saved!");
-                break;
-            case "Load Profile":
-                JOptionPane.showMessageDialog(null, "Profile loaded!");
-                break;
-            case "Exit":
-                // First confirmation dialog
-                int confirmed = JOptionPane.showConfirmDialog(null, 
-                    "Are you sure you want to exit?", "Exit Confirmation",
-                    JOptionPane.YES_NO_OPTION);
-                
-                if (confirmed == JOptionPane.YES_OPTION) {
-                    // Second confirmation dialog
-                    int reallySure = JOptionPane.showConfirmDialog(null,
-                        "Are you really sure you want to exit?", "Final Confirmation",
-                        JOptionPane.YES_NO_OPTION);
-                    
-                    if (reallySure == JOptionPane.YES_OPTION) {
-                        // Third confirmation dialog
-                        int reallyReallySure = JOptionPane.showConfirmDialog(null,
-                            "Are you really, really sure you want to exit?", "Final Confirmation",
-                            JOptionPane.YES_NO_OPTION);
-                        
-                        if (reallyReallySure == JOptionPane.YES_OPTION) {
-                            System.exit(0); // Exit the application
-                        }
-                    }
-                }
-                break;
-            default:
-                break;
-        }
+        return frame;
     }
 }
