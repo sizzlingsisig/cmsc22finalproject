@@ -233,7 +233,8 @@ public class Game {
     public static JFrame createGameFrame() {
         JFrame frame = new JFrame("Game Interface");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(750, 900); // Adjust size as needed
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(screenSize.width, screenSize.height);        
         frame.setLayout(new GridBagLayout());
         frame.setResizable(true); // Allow resizing
         return frame;
