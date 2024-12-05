@@ -84,7 +84,7 @@ public class MainMenu extends JPanel {
                     frame.dispose(); // Dispose the main menu frame
                 }
                 // Show the GameScreen
-                new Game().createGameFrame();
+                new Game();
                 break;
             case "Show Profile":
                 // Action for the profile label
