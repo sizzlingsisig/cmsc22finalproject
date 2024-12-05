@@ -230,12 +230,13 @@ public class Game {
         }
     }
 
-    public static JFrame createGameFrame() {
+    public JFrame createGameFrame() {
         JFrame frame = new JFrame("Game Interface");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize.width, screenSize.height);        
+        frame.setSize(screenSize.width, screenSize.height);
         frame.setLayout(new GridBagLayout());
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize the frame
         frame.setResizable(true); // Allow resizing
         return frame;
     }

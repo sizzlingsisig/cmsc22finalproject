@@ -66,19 +66,26 @@ public class MainMenu extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            JFrame frame; 
+
             switch (buttonText) {
                 case "LETS GO GAMBLING":
                     // Dispose of the current frame
-                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
+                    frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
                     if (frame != null) {
                         frame.dispose(); // Dispose the main menu frame
                     }
                     // Show the GameScreen
-                    new Game();
+                    new Game().createGameFrame();
                     break;
                 case "SHOW PROFILE":
                     // Action for the profile button
-                    JOptionPane.showMessageDialog(MainMenu.this, "Showing profile information...");
+                    frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
+                    if (frame != null) {
+                        frame.dispose(); // Dispose the main menu frame
+                    }
+                    // Show the GameScreen
+                    new ProfileScreen().createProfileScreen();
                     break;
                 case "EXIT":
                     // Action for the exit button
