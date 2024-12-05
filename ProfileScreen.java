@@ -52,6 +52,7 @@ public class ProfileScreen {
         // Create the profile screen
         JFrame profileFrame = new JFrame("Profile");
         profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        profileFrame.setResizable(false);
         
         // Set the frame size to the screen size
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -88,11 +89,11 @@ public class ProfileScreen {
         middlePanel.setLayout(new GridLayout(1, 2, 10, 10)); // 1 row, 2 columns, with gaps
         middlePanel.setOpaque(false); // Make the panel transparent
 
-        // Profile picture panel (0,0)
+        // Profile picture panel (0,0 )
         JPanel profilePanel = new JPanel();
         profilePanel.setBorder(new LineBorder(MAIN_COLOR, 2)); // Add a border to the profile panel
         profilePanel.setLayout(new BorderLayout()); // Use BorderLayout to position the label
-        profilePanel.add (new JLabel("Profile Picture Here", SwingConstants.CENTER), BorderLayout.CENTER); // Placeholder for profile picture
+        profilePanel.add(new JLabel("Profile Picture Here", SwingConstants.CENTER), BorderLayout.CENTER); // Placeholder for profile picture
 
         // Add a label for the profile picture panel
         JLabel profileLabel = new JLabel("Profile Picture", SwingConstants.CENTER);
@@ -146,7 +147,14 @@ public class ProfileScreen {
         buttonPanel2.setOpaque(false); // Make the panel transparent
         buttonPanel2.add(createStyledButton("View Activity"));
         buttonPanel2.add(createStyledButton("Change Password"));
-        buttonPanel2.add(createStyledButton("Help"));
+
+        // Back to Main Menu Button
+        RoundedButton backToMainMenuButton = createStyledButton("Back to Main Menu");
+        backToMainMenuButton.addActionListener(e -> {
+            profileFrame.dispose(); // Close the profile frame
+            MainMenu.createMainMenuFrame(); // Open the main menu
+        });
+        buttonPanel2.add(backToMainMenuButton); // Add to the second button panel
 
         // Add buttonPanel1 under the profile panel, spanning across the width
         bottomGbc.gridx = 0;

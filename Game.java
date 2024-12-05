@@ -19,7 +19,7 @@ public class Game {
         frame.setSize(screenSize.width, screenSize.height);
         frame.setLayout(new GridBagLayout());
         frame.setResizable(true);
-
+    
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.BOTH;
@@ -175,13 +175,14 @@ class ButtonPanelFactory {
 }
 
 // TopBar Component
+// TopBar Component
 class TopBar {
     private Stack<Integer> betHistory = new Stack<>(); // Stack to track bets
     private int totalBet = 0; // Total bet amount
 
     public JPanel render() {
         JPanel topBar = new JPanel();
-        topBar.setBackground(new Color(6 , 57, 112));
+        topBar.setBackground(new Color(6, 57, 112));
         topBar.setLayout(new BorderLayout());
         topBar.setBorder(new LineBorder(Color.BLACK, 3));
 
@@ -192,7 +193,7 @@ class TopBar {
         topBar.add(totalBetLabel, BorderLayout.WEST);
 
         // Button Panel
-        JPanel buttonPanelContainer = new JPanel(new GridLayout(1, 6, 6, 6));
+        JPanel buttonPanelContainer = new JPanel(new GridLayout(1, 8, 6, 6)); // Adjusted to accommodate new buttons
         buttonPanelContainer.setBackground(new Color(6, 57, 112));
         buttonPanelContainer.setBorder(BorderFactory.createEmptyBorder(5, 300, 5, 200));
 
@@ -202,20 +203,20 @@ class TopBar {
             JButton button = ButtonFactory.createBetButton(increment, totalBetLabel);
             button.addActionListener(e -> {
                 betHistory.push(increment); // Track the bet
- totalBet += increment; // Update total bet
+                totalBet += increment; // Update total bet
                 totalBetLabel.setText("   Total Bet: " + totalBet + " php");
             });
             buttonPanelContainer.add(button);
         }
 
-        // Panel for Undo and Deposit Buttons
-        JPanel eastButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        eastButtonPanel.setBackground(new Color(6, 57, 112));
+        // Panel for Undo, Main Menu, and Start Game Buttons
+        JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        actionButtonPanel.setBackground(new Color(6, 57, 112));
 
         // Undo Bet Button
-        JButton undoBetButton = new JButton("Undo Bet");
+        RoundedButton undoBetButton = new RoundedButton("Undo Bet");
         undoBetButton.setFont(new Font("Garamond", Font.BOLD, 16));
-        undoBetButton.setForeground(Color.WHITE);
+        undoBetButton.setForeground(Color.BLACK);
         undoBetButton.addActionListener(e -> {
             if (!betHistory.isEmpty()) {
                 int lastBet = betHistory.pop(); // Remove the latest bet
@@ -223,21 +224,46 @@ class TopBar {
                 totalBetLabel.setText("   Total Bet: " + totalBet + " php");
             }
         });
-        eastButtonPanel.add(undoBetButton);
+        actionButtonPanel.add(undoBetButton);
+
+        // Main Menu Button
+        RoundedButton mainMenuButton = new RoundedButton("Main Menu");
+        mainMenuButton.setFont(new Font("Garamond", Font.BOLD, 16));
+        mainMenuButton.setForeground(Color.BLACK);
+        mainMenuButton.addActionListener(e -> {
+            // Dispose of the current frame and show the main menu
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(topBar);
+            if (frame != null) {
+                frame.dispose(); // Dispose the current game frame
+            }
+            MainMenu.createMainMenuFrame(); // Show the main menu
+        });
+        actionButtonPanel.add(mainMenuButton);
+
+        // Start Game Button
+        JButton startGameButton = new JButton("Start Game");
+        startGameButton.setFont(new Font("Garamond", Font.BOLD, 16));
+        startGameButton.setForeground(Color.BLACK);
+        startGameButton.addActionListener(e -> {
+            // Logic to start a new game
+            System.out.println("Starting a new game...");
+            // You can add logic here to reset the game state or initialize a new game
+        });
+        actionButtonPanel.add(startGameButton);
 
         // Deposit Button
         JButton depositButton = new JButton("Deposit");
         depositButton.setFont(new Font("Garamond", Font.BOLD, 16));
-        depositButton.setForeground(Color.WHITE);
+        depositButton.setForeground(Color.BLACK);
         depositButton.addActionListener(e -> System.out.println("Deposit button clicked"));
-        eastButtonPanel.add(depositButton);
+        actionButtonPanel.add(depositButton);
 
         // Add margin around the buttons
-        eastButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 15));
+        actionButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 15));
 
         // Add panels to topBar
         topBar.add(buttonPanelContainer, BorderLayout.CENTER);
-        topBar.add(eastButtonPanel, BorderLayout.EAST);
+        topBar.add(actionButtonPanel, BorderLayout.EAST);
 
         return topBar;
     }
