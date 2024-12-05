@@ -1,4 +1,4 @@
-package cmsc22groupproj;
+package logic;
 
 public class Bet {
     private String betType;                                                         //Player/Banker/Tie

@@ -1,4 +1,4 @@
-package cmsc22groupproj;
+package logic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Player {
             total += value;
         }
 
-        return total % 10;                              //para magkuha sng last digit sng total
+        return total % 10;                      
     }
 
     public void resetHand() {

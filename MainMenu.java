@@ -1,6 +1,5 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import javax.swing.*;
 
 // Class for the main menu
@@ -10,7 +9,7 @@ public class MainMenu extends JPanel {
     
     public MainMenu() {
         // Load the background image
-        backgroundImage = new ImageIcon("C:/Users/cj/Downloads/git/cmsc22finalproject/297.png").getImage();
+        backgroundImage = new ImageIcon("C:/Users/cj/Downloads/git/cmsc22finalproject/resources/297.png").getImage();
     
         // Check if the image is loaded correctly
         if (backgroundImage.getWidth(null) == -1 || backgroundImage.getHeight(null) == -1) {
@@ -31,23 +30,82 @@ public class MainMenu extends JPanel {
             add(panels[i]); // Add the panel to the grid
         }
 
-        // Manually create and add buttons to the bottom three panels
-        panels[6] = createButtonPanel("LETS GO GAMBLING");
-        panels[7] = createButtonPanel("SHOW PROFILE");
-        panels[8] = createButtonPanel("EXIT");
+        // Manually create and add clickable labels to the bottom three panels
+        panels[6] = createClickableLabelPanel("Lets Go Gambling");
+        panels[7] = createClickableLabelPanel("Show Profile");
+        panels[8] = createClickableLabelPanel("Exit");
     }
     
-    private JPanel createButtonPanel(String buttonText) {
+    private JPanel createClickableLabelPanel(String labelText) {
         JPanel panel = new JPanel();
         panel.setOpaque(false); // Set the panel to be transparent
         panel.setLayout(new BorderLayout()); // Use BorderLayout for positioning
         
-        JButton button = new JButton(buttonText);
-        button.addActionListener(new ButtonClickListener(buttonText)); // Pass button text to listener
-        panel.add(button, BorderLayout.CENTER); // Add button to the center
+        JLabel label = new JLabel(labelText);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setForeground(Color.WHITE); // Set label color
+        label.setFont(new Font("Garamond", Font.BOLD, 30));
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Change cursor to hand on hover
+        
+        // Add mouse listener to handle clicks
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleLabelClick(labelText);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                label.setForeground(Color.YELLOW); // Change color for glow effect
+                label.setFont(label.getFont().deriveFont(35f)); // Increase font size for glow effect
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                label.setForeground(Color.WHITE); // Reset color
+                label.setFont(label.getFont().deriveFont(30f)); // Reset font size
+            }
+        });
+        
+        panel.add(label, BorderLayout.CENTER); // Add label to the center
         add(panel); // Add the panel to the grid
         
         return panel;
+    }
+    
+    private void handleLabelClick(String labelText) {
+        JFrame frame; 
+
+        switch (labelText) {
+            case "Lets Go Gambling":
+                // Dispose of the current frame
+                frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
+                if (frame != null) {
+                    frame.dispose(); // Dispose the main menu frame
+                }
+                // Show the GameScreen
+                new Game().createGameFrame();
+                break;
+            case "Show Profile":
+                // Action for the profile label
+                frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
+                if (frame != null) {
+                    frame.dispose(); // Dispose the main menu frame
+                }
+                // Show the ProfileScreen
+                new ProfileScreen().createProfileScreen();
+                break;
+            case "Exit":
+                // Action for the exit label
+                int confirm = JOptionPane.showConfirmDialog(MainMenu.this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    System.exit(0); // Exit the application
+                }
+                break;
+            default:
+                System.out.println("Unknown label clicked: " + labelText);
+                break;
+        }
     }
     
     @Override
@@ -56,52 +114,6 @@ public class MainMenu extends JPanel {
         // Draw the background image
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
-    
-    private class ButtonClickListener implements ActionListener {
-        private String buttonText;
-
-        public ButtonClickListener(String buttonText) {
-            this.buttonText = buttonText;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JFrame frame; 
-
-            switch (buttonText) {
-                case "LETS GO GAMBLING":
-                    // Dispose of the current frame
-                    frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
-                    if (frame != null) {
-                        frame.dispose(); // Dispose the main menu frame
-                    }
-                    // Show the GameScreen
-                    new Game().createGameFrame();
-                    break;
-                case "SHOW PROFILE":
-                    // Action for the profile button
-                    frame = (JFrame) SwingUtilities.getWindowAncestor(MainMenu.this);
-                    if (frame != null) {
-                        frame.dispose(); // Dispose the main menu frame
-                    }
-                    // Show the GameScreen
-                    new ProfileScreen().createProfileScreen();
-                    break;
-                case "EXIT":
-                    // Action for the exit button
-                    int confirm = JOptionPane.showConfirmDialog(MainMenu.this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
-                    if (confirm == JOptionPane.YES_OPTION) {
-                        System.exit(0); // Exit the application
-                    }
-                    break;
-                default:
-                    System.out.println("Unknown button clicked: " + buttonText);
-                    break;
-            }
-        }
-    }
-
-    // Method to initialize and return a JFrame containing the MainMenu
     public static JFrame createMainMenuFrame() {
         JFrame frame = new JFrame("Java UI with Background Image");
         MainMenu panel = new MainMenu();

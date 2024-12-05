@@ -1,4 +1,4 @@
-package cmsc22groupproj;
+package logic;
 
 import java.util.ArrayList;
 import java.util.List;

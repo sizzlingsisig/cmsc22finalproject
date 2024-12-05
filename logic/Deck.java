@@ -1,43 +1,46 @@
-package cmsc22groupproj;
+package logic;
 
 public class Deck {
-    private Card[] cards;                                                   //declaration sng list cards
-    private int currentIndex;                                               //index to track for later
+    private Card[] cards;  // Declaration of the list of cards
+    private int currentIndex;  // Index to track the current position in the deck
 
     public Deck() {
-        cards = new Card[52];                                               //initialization of list with 52 slots
-        int index = 0;                                                      //initialization od index sa 0
+        cards = new Card[52];  // Initialization of the list with 52 slots
+        int index = 0;  // Initialization of index to 0
 
-        //populate the deck with 52 cards
-        for (int suit = 0; suit < 4; suit++) {                              //from 4 suits
-            for (int rank = 1; rank <= 13; rank++) {                        //from 1 to 13 ranks
-                cards[index++] = new Card(rank);
+        // Populate the deck with 52 cards
+        String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};  // Define suits
+        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};  // Define ranks
+
+        for (int suit = 0; suit < suits.length; suit++) {  // Loop through suits
+            for (int value = 0; value < ranks.length; value++) {  // Loop through ranks
+                cards[index++] = new Card(suits[suit], ranks[value], index);  // Create a new card
             }
         }
 
-        shuffle();                                                          //shuffle upon creation
-        currentIndex = 0;                                                   //reset the current index
+        shuffle();  // Shuffle upon creation
+        currentIndex = 0;  // Reset the current index
     }
 
     public void shuffle() {
-        //simple shuffle
-        for (int i = cards.length - 1; i > 0; i--) {                        //from last until 2nd card
-            int j = (int) (Math.random() * (i + 1));                        //when at i make a j position (randomize between 0 to i) for swapping later
-            Card temp = cards[i];                                           //temp holds i elements
-            cards[i] = cards[j];                                            //the cards that is located at index i will be swapped to index j which is before that card or any random generated index for that i [bale if i ta bi is 0 tas ang generated nga j saiya is 4 si index 4 na ang ma store sa index 0]
-            cards[j] = temp;                                                //since j has been transfered to index i the elements from index i will be stored in index j [in sximpler terms ging swap sila HAHAHAHHAHAHAHAHA]                                            
+        // Simple shuffle
+        for (int i = cards.length - 1; i > 0; i--) {  // From last until 2nd card
+            int j = (int) (Math.random() * (i + 1));  // Generate a random index
+            Card temp = cards[i];  // Hold the card at index i
+            cards[i] = cards[j];  // Swap the cards
+            cards[j] = temp;  // Complete the swap
         }
     }
 
     public Card drawCard() {
         if (currentIndex < cards.length) {
-            return cards[currentIndex++];                                   //if may unod return ang 1st card tas increment
+            return cards[currentIndex++];  // Return the current card and increment the index
         } else {
-            return null;                                                    //ubos na cards
+            return null;  // No more cards
         }
     }
 
     public boolean hasCards() {
-        return currentIndex < cards.length;
+        return currentIndex < cards.length;  // Check if there are cards left
     }
 }
